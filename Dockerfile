@@ -1,25 +1,14 @@
-# Usa la imagen oficial de Java 17
-FROM eclipse-temurin:17-jdk-alpine
-
-# Crea el directorio de trabajo
+# Etapa 1: Construcción con Maven
+FROM maven:3.9.9-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copia el archivo Maven Wrapper y el pom.xml
-COPY mvnw .
-COPY .mvn .mvn
 COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
 
-# Descarga dependencias (para cachear)
-RUN ./mvnw dependency:go-offline -B
+# Etapa 2: Imagen final ligera
+FROM eclipse-temurin:17-jdk-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Copia el código fuente
-COPY src src
-
-# Empaqueta la aplicación
-RUN ./mvnw clean package -DskipTests
-
-# Expón el puerto 8080
 EXPOSE 8080
-
-# Ejecuta el JAR generado
-CMD ["java", "-jar", "target/*.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]

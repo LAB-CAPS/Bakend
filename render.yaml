@@ -1,14 +1,9 @@
 services:
   - type: web
-    name: hospital-backend
-    env: java
+    name: backend-sistema
+    env: docker
     plan: free
-    buildCommand: "./mvnw clean package -DskipTests"
-    startCommand: "java -jar target/*.jar"
     envVars:
-      - key: SPRING_DATASOURCE_URL
-        value: jdbc:mysql://hopper.proxy.rlwy.net:59556/railway?useSSL=false&allowPublicKeyRetrieval=true
-      - key: SPRING_DATASOURCE_USERNAME
-        value: root
-      - key: SPRING_DATASOURCE_PASSWORD
-        value: gtNmvjfPNBlwdJzUcKrdTSIerqvgaYfB
+      SPRING_DATASOURCE_URL: jdbc:mysql://hopper.proxy.rlwy.net:59556/railway
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: gtNmvjfPNBlwdJzUcKrdTSIerqvgaYfB
